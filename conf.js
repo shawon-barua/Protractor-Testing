@@ -1,12 +1,18 @@
 // conf.js
 let SpecReporter = require('jasmine-spec-reporter').SpecReporter;
-//var HtmlReporter = require('protractor-jasmine2-screenshot-reporter');
-//var reporter=new HtmlReporter({
- //   baseDirectory: 'C:/Users/shawo/Desktop/new/protractor-result', // a location to store screen shots.
- //   docTitle: 'Protractor Demo Reporter',
-  //  docName:    'protractor-demo-tests-report.html'
-    
-//});
+var HtmlScreenshotReporter = require('protractor-jasmine2-screenshot-reporter');
+var reporter = new HtmlScreenshotReporter({
+  dest: 'target/screenshots',
+  filename: 'my-report.html',
+   reportOnlyFailedSpecs: false,
+    showQuickLinks: true,
+  captureOnlyFailedSpecs: true,
+    preserveDirectory: true,
+    pathBuilder: function(currentSpec, suites, browserCapabilities) {
+    // will return chrome/your-spec-name.png
+    return browserCapabilities.get('browserName') + '/' + currentSpec.fullName;
+  }
+});
 
 
 exports.config = {
@@ -22,9 +28,16 @@ exports.config = {
     browserName: 'chrome',
   },
     
+     // Setup the report before any tests start
+  beforeLaunch: function() {
+    return new Promise(function(resolve){
+      reporter.beforeLaunch(resolve);
+    });
+  },
+    
    onPrepare: function() {
       // Add a screenshot reporter and store screenshots to `/tmp/screnshots`: 
-      //jasmine.getEnv().addReporter(reporter);
+      jasmine.getEnv().addReporter(reporter);
       jasmine.getEnv().addReporter(new SpecReporter({
       spec: {
             displayStacktrace: true,
@@ -32,6 +45,12 @@ exports.config = {
             takeScreenshotsOnlyOnFailures: true
       }
     }));
-   }
-};
+   },
+    
+    afterLaunch: function(exitCode) {
+    return new Promise(function(resolve){
+      reporter.afterLaunch(resolve.bind(this, exitCode));
+    });
+}
+}
 
