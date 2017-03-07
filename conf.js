@@ -6,8 +6,13 @@ var reporter = new HtmlScreenshotReporter({
   filename: 'my-report.html',
    reportOnlyFailedSpecs: false,
     showQuickLinks: true,
-  captureOnlyFailedSpecs: true,
+    captureOnlyFailedSpecs: true,
     preserveDirectory: true,
+     reportTitle: "Snow Test Cases",
+    configurationStrings: {
+   // logUrlOnFailure: true,
+     logBrowserConsoleOnFailure: true   
+  },
     pathBuilder: function(currentSpec, suites, browserCapabilities) {
     // will return chrome/your-spec-name.png
     return browserCapabilities.get('browserName') + '/' + currentSpec.fullName;
@@ -18,15 +23,18 @@ var reporter = new HtmlScreenshotReporter({
 exports.config = {
   framework: 'jasmine',
   seleniumAddress: 'http://localhost:4444/wd/hub',
-  specs: ['spec.js'],
+  specs: ['spec1.js'],
     jasmineNodeOpts: {
         showColors: true,
         defaultTimeoutInterval: 36000,
          print: function() {}
     },  
-  multiCapabilities:  {
+capabilities: {
     browserName: 'chrome',
+    shardTestFiles: true,
+    maxInstances: 2
   },
+   
     
      // Setup the report before any tests start
   beforeLaunch: function() {
@@ -44,6 +52,7 @@ exports.config = {
             //takeScreenshots: true,
             takeScreenshotsOnlyOnFailures: true
       }
+        
     }));
    },
     
