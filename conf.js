@@ -1,9 +1,13 @@
 // conf.js
 let SpecReporter = require('jasmine-spec-reporter').SpecReporter;
 var HtmlScreenshotReporter = require('protractor-jasmine2-screenshot-reporter');
+
+var xmlReport=require('jasmine-reporters');
 var reporter = new HtmlScreenshotReporter({
-  dest: 'target/screenshots',
-  filename: 'my-report.html',
+  dest: 'test/report/',
+    screenshotsFolder: 'images',
+  filename: 'test-report.html',
+    fileNameDateSuffix: true,
    reportOnlyFailedSpecs: false,
     showQuickLinks: true,
     captureOnlyFailedSpecs: true,
@@ -23,7 +27,7 @@ var reporter = new HtmlScreenshotReporter({
 exports.config = {
   framework: 'jasmine',
   seleniumAddress: 'http://localhost:4444/wd/hub',
-  specs: ['spec1.js'],
+  specs: ['spec.js'],
     jasmineNodeOpts: {
         showColors: true,
         defaultTimeoutInterval: 36000,
@@ -46,6 +50,8 @@ capabilities: {
    onPrepare: function() {
       // Add a screenshot reporter and store screenshots to `/tmp/screnshots`: 
       jasmine.getEnv().addReporter(reporter);
+       jasmine.getEnv().addReporter(xmlReport);
+
       jasmine.getEnv().addReporter(new SpecReporter({
       spec: {
             displayStacktrace: true,
